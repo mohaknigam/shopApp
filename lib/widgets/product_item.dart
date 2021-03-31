@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProductItem extends StatelessWidget {
   final String id;
@@ -29,6 +30,7 @@ class ProductItem extends StatelessWidget {
         ),
         title: Text(
           title,
+          style: GoogleFonts.lato(),
           textAlign: TextAlign.center,
         ),
       ),
