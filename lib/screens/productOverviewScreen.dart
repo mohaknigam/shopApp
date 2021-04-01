@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/product.dart';
 import 'package:shop_app/widgets/product_item.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProductOverviewScreen extends StatelessWidget {
   final List<Product> productsList = [
@@ -39,14 +40,17 @@ class ProductOverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Shop'),
+        title: Text(
+          'My Shop',
+          style: GoogleFonts.lato(),
+        ),
       ),
       body: GridView.builder(
         padding: const EdgeInsets.all(10.0),
         itemCount: productsList.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 3 / 2,
+          childAspectRatio: 1,
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
         ),

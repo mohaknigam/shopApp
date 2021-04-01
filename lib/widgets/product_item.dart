@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shop_app/screens/product_detail_screen.dart';
 
 class ProductItem extends StatelessWidget {
   final String id;
@@ -14,24 +15,44 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridTile(
-      child: Image.network(
-        imageUrl,
-        fit: BoxFit.cover,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            ProductDetailScreen.routeName,
+            arguments: id,
+          );
+        },
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+        ),
       ),
-      footer: GridTileBar(
-        backgroundColor: Colors.black54,
-        leading: IconButton(
-          icon: Icon(Icons.favorite),
-          onPressed: () {},
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.shopping_cart),
-          onPressed: () {},
-        ),
-        title: Text(
-          title,
-          style: GoogleFonts.lato(),
-          textAlign: TextAlign.center,
+      footer: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: GridTileBar(
+          backgroundColor: Colors.black87,
+          leading: IconButton(
+            icon: Icon(
+              Icons.favorite,
+              size: 20,
+            ),
+            onPressed: () {},
+            color: Theme.of(context).accentColor,
+          ),
+          trailing: IconButton(
+            icon: Icon(
+              Icons.shopping_cart,
+              size: 20,
+            ),
+            onPressed: () {},
+            color: Theme.of(context).accentColor,
+          ),
+          title: Text(
+            title,
+            style: GoogleFonts.lato(),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
