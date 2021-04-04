@@ -1,54 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/Providers/products_providers.dart';
+import 'package:shop_app/Providers/cart.dart';
+import 'package:shop_app/Providers/products.dart';
+import 'package:shop_app/widgets/badge.dart';
+import 'package:shop_app/widgets/main_drawer.dart';
 import 'package:shop_app/widgets/products_grid.dart';
 
+import 'cart_screen.dart';
+
 enum FilterOptions {
-  Favourites,
+  Favorite,
   All,
 }
 
-class ProductOverviewScreen extends StatefulWidget {
+class ProductsOverviewScreen extends StatefulWidget {
   @override
-  _ProductOverviewScreenState createState() => _ProductOverviewScreenState();
+  _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
 }
 
-class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
-  var _showOnlyFavourites = false;
+class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+  var _showOnlyfav = false;
+  var _isInit = true;
+  var _isLoading = false;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).fetchProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final productContainer = Provider.of<Products>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'My Shop',
-          style: GoogleFonts.lato(),
-        ),
-        actions: [
+        title: const Text('My shop'),
+        actions: <Widget>[
           PopupMenuButton(
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                  child: Text('Only favorites'), value: FilterOptions.Favorite),
+              PopupMenuItem(child: Text('Show All'), value: FilterOptions.All),
+            ],
+            icon: Icon(Icons.more_vert),
             onSelected: (FilterOptions selectedValue) {
               setState(() {
-                if (selectedValue == FilterOptions.Favourites) {
-                  _showOnlyFavourites = true;
+                if (selectedValue == FilterOptions.Favorite) {
+                  _showOnlyfav = true;
                 } else {
-                  _showOnlyFavourites = false;
+                  _showOnlyfav = false;
                 }
               });
             },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                  child: Text('Only Favourites'),
-                  value: FilterOptions.Favourites),
-              PopupMenuItem(child: Text('Show All'), value: FilterOptions.All),
-            ],
-            icon: Icon(
-              Icons.more_vert,
-            ),
           ),
+          Consumer<Cart>(
+            builder: (_, cart, child) => Badge(
+              child: child,
+              value: cart.count.toString(),
+            ),
+            child: IconButton(
+                icon: Icon(
+                  Icons.shopping_cart,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(CartScreen.routeName);
+                }),
+          )
         ],
       ),
-      body: ProductsGrid(_showOnlyFavourites),
+      drawer: MainDrawer(),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(_showOnlyfav),
     );
   }
 }
