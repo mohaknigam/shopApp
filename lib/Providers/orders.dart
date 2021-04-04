@@ -5,13 +5,13 @@ import 'package:http/http.dart' as http;
 
 import './cart.dart';
 
-class OrderItem {
+class OrderItemModel {
   final String id;
   final double amount;
-  final List<CartItem> products;
+  final List<CartItemModel> products;
   final DateTime dateTime;
 
-  OrderItem({
+  OrderItemModel({
     @required this.id,
     @required this.amount,
     @required this.dateTime,
@@ -20,13 +20,13 @@ class OrderItem {
 }
 
 class Orders with ChangeNotifier {
-  List<OrderItem> _orders = [];
+  List<OrderItemModel> _orders = [];
   final String authToken;
   final String userId;
 
   Orders(this.authToken, this._orders, this.userId);
 
-  List<OrderItem> get orders {
+  List<OrderItemModel> get orders {
     return [..._orders];
   }
 
@@ -34,20 +34,20 @@ class Orders with ChangeNotifier {
     final url =
         'https://flutter-shop-app-8951b.firebaseio.com/orders/$userId.json?auth=$authToken';
     final response = await http.get(url);
-    final List<OrderItem> loadedOrders = [];
+    final List<OrderItemModel> loadedOrders = [];
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
     if (extractedData == null) {
       return;
     }
     extractedData.forEach((orderId, orderData) {
       loadedOrders.add(
-        OrderItem(
+        OrderItemModel(
           id: orderId,
           amount: orderData['amount'],
           dateTime: DateTime.parse(orderData['dateTime']),
           products: (orderData['products'] as List<dynamic>)
               .map(
-                (prod) => CartItem(
+                (prod) => CartItemModel(
                   id: prod['id'],
                   price: prod['price'],
                   quantity: prod['quantity'],
@@ -62,7 +62,7 @@ class Orders with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addOrder(List<CartItem> cartProducts, double total) async {
+  Future<void> addOrder(List<CartItemModel> cartProducts, double total) async {
     final url =
         'https://flutter-shop-app-8951b.firebaseio.com/orders/$userId.json?auth=$authToken  ';
     final timestamp = DateTime.now();
@@ -81,7 +81,7 @@ class Orders with ChangeNotifier {
         }));
     _orders.insert(
       0,
-      OrderItem(
+      OrderItemModel(
         id: json.decode(response.body)['name'],
         amount: total,
         products: cartProducts,
