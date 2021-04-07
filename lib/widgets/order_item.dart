@@ -2,12 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../providers/orders.dart' as or;
+import 'package:shop_app/Providers/orders.dart';
 
 class OrderItem extends StatefulWidget {
   final double amount;
-  final or.OrderItem order;
+  final OrderItemModel order;
 
   OrderItem(this.amount, this.order);
 
