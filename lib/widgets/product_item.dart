@@ -5,7 +5,7 @@ import 'package:shop_app/Providers/cart.dart';
 import 'package:shop_app/Providers/product.dart';
 import 'package:shop_app/screens/product_detail_screen.dart';
 
-class ProductItem extends StatelessWidget {
+class ProductItem extends StatefulWidget {
   // final String id;
   // final String title;
   // final String imageUrl;
@@ -13,9 +13,14 @@ class ProductItem extends StatelessWidget {
   //ProductItem(this.id, this.title, this.imageUrl);
 
   @override
+  _ProductItemState createState() => _ProductItemState();
+}
+
+class _ProductItemState extends State<ProductItem> {
+  @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
-    final cart = Provider.of<Cart>(context);
+    final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
     final authData = Provider.of<Auth>(context);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
